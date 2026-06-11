@@ -13,6 +13,8 @@ development:
 test:
   <<: *default
   database: expense_system_test
+  username: <%= ENV.fetch("TEST_DATABASE_USERNAME") { ENV.fetch("DATABASE_USERNAME") { "root" } } %>
+  password: <%= ENV.fetch("TEST_DATABASE_PASSWORD") { ENV.fetch("DATABASE_PASSWORD") { "" } } %>
 
 production:
   <<: *default
