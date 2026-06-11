@@ -3,10 +3,10 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY package.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies without lockfile so platform-specific optional deps resolve correctly
+RUN npm install --no-package-lock
 
 # Copy the rest of the application
 COPY . .
