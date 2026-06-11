@@ -47,7 +47,6 @@ RSpec.describe Expense, type: :model do
       expense = Expense.new(description: "Lunch", amount: 50.0, date: Date.today, category: nil)
       expect(expense).not_to be_valid
     end
-
     it "is invalid with a future date" do
       expense = Expense.new(description: "Lunch", amount: 50.0, date: Date.tomorrow, category: category)
       expect(expense).not_to be_valid
