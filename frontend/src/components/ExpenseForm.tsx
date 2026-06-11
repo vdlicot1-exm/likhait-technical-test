@@ -2,11 +2,12 @@
  * Form component for adding/editing expenses
  */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ExpenseFormData } from "../types";
-import { EXPENSE_CATEGORIES } from "../constants/categories";
+import { fetchCategories } from "../services/api";
 import { TextField, SelectBox, Button } from "../vibes";
 import { useExpenseForm } from "../hooks/useExpenseForm";
+import { formatDate } from "../utils/expenseUtils";
 
 interface ExpenseFormProps {
   initialData?: Partial<ExpenseFormData>;
@@ -27,6 +28,20 @@ export function ExpenseForm({
       onSubmit,
     });
 
+  const [categoryOptions, setCategoryOptions] = useState<
+    Array<{ value: string; label: string }>
+  >([]);
+
+  useEffect(() => {
+    fetchCategories()
+      .then((cats) =>
+        setCategoryOptions(cats.map((c) => ({ value: c.name, label: c.name }))),
+      )
+      .catch((err) => console.error("Failed to load categories:", err));
+  }, []);
+
+  const today = formatDate(new Date());
+
   const formStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: "column",
@@ -38,11 +53,6 @@ export function ExpenseForm({
     gap: "0.5rem",
     marginTop: "0.5rem",
   };
-
-  const categoryOptions = EXPENSE_CATEGORIES.map((category) => ({
-    value: category,
-    label: category,
-  }));
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>
@@ -83,6 +93,7 @@ export function ExpenseForm({
         label="Date"
         type="date"
         value={formData.date}
+        max={today}
         onChange={(e) => handleChange("date", e.target.value)}
         error={errors.date}
         fullWidth
